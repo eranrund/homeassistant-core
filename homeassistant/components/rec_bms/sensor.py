@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import logging
 
-from homeassistant.components.rec_bms.coordinator import RECBMSDataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -23,6 +22,7 @@ from homeassistant.components.sensor import (
 
 from .const import DOMAIN
 from .models import RECBMSEntity
+from .coordinator import RECBMSDataUpdateCoordinator
 
 
 @dataclass

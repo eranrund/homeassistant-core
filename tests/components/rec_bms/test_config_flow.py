@@ -4,10 +4,12 @@ from unittest.mock import AsyncMock, patch
 import pytest
 
 from homeassistant import config_entries
-from homeassistant.components.rec_bms.config_flow import CannotConnect, InvalidAuth
-from homeassistant.components.rec_bms.const import DOMAIN
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
+
+from .config_flow import CannotConnect, InvalidAuth
+from .const import DOMAIN
+
 
 pytestmark = pytest.mark.usefixtures("mock_setup_entry")
 

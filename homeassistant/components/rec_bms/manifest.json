@@ -10,5 +10,5 @@
   "requirements": ["aiohttp-sse-client==0.2.1"],
   "ssdp": [],
   "zeroconf": [],
-  "version": "0.0.1"
+  "version": "0.0.2"
 }
