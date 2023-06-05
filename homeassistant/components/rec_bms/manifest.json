@@ -1,0 +1,13 @@
+{
+  "domain": "rec_bms",
+  "name": "REC-BMS",
+  "codeowners": ["@eranrund"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://www.home-assistant.io/integrations/rec_bms",
+  "homekit": {},
+  "iot_class": "local_polling",
+  "requirements": [],
+  "ssdp": [],
+  "zeroconf": []
+}

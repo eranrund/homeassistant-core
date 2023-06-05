@@ -361,6 +361,7 @@ FLOWS = {
         "rainmachine",
         "rapt_ble",
         "rdw",
+        "rec_bms",
         "recollect_waste",
         "renault",
         "reolink",
