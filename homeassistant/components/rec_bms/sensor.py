@@ -12,7 +12,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.const import UnitOfElectricCurrent, EntityCategory
+from homeassistant.const import UnitOfElectricCurrent, EntityCategory, UnitOfElectricPotential
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -38,9 +38,176 @@ SENSORS: tuple[RECBMSSensorEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
         device_class=SensorDeviceClass.CURRENT,
         state_class=SensorStateClass.MEASUREMENT,
-        entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda data: data["status"]["bms_array"]["master"]["ibat"]
     ),
+
+    RECBMSSensorEntityDescription(
+        key="battery_voltage",
+        name="Battery voltage",
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda data: data["status"]["bms_array"]["master"]["vbat"]
+    ),
+
+    RECBMSSensorEntityDescription(
+        key="battery_soc",
+        name="Battery SOC",
+        native_unit_of_measurement='%',
+        device_class=SensorDeviceClass.BATTERY,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda data: data["status"]["bms_array"]["master"]["soc"]
+    ),
+
+    RECBMSSensorEntityDescription(
+        key="battery_cell1",
+        name="Battery cell 1",
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["nap"]["0"]
+    ),
+
+    RECBMSSensorEntityDescription(
+        key="battery_cell2",
+        name="Battery cell 2",
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["nap"]["1"]
+    ),
+
+    RECBMSSensorEntityDescription(
+        key="battery_cell3",
+        name="Battery cell 3",
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["nap"]["2"]
+    ),
+
+    RECBMSSensorEntityDescription(
+        key="battery_cell4",
+        name="Battery cell 4",
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["nap"]["3"]
+    ),
+
+    RECBMSSensorEntityDescription(
+        key="battery_cell5",
+        name="Battery cell 5",
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["nap"]["4"]
+    ),
+
+    RECBMSSensorEntityDescription(
+        key="battery_cell6",
+        name="Battery cell 6",
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["nap"]["5"]
+    ),
+
+    RECBMSSensorEntityDescription(
+        key="battery_cell7",
+        name="Battery cell 7",
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["nap"]["6"]
+    ),
+
+    RECBMSSensorEntityDescription(
+        key="battery_cell8",
+        name="Battery cell 8",
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["nap"]["7"]
+    ),
+
+
+
+    RECBMSSensorEntityDescription(
+        key="battery_cell_res1",
+        name="Battery cell 1 resistance",
+        native_unit_of_measurement="Ω",
+        device_class="resistance",
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["nap"]["0"]
+    ),
+
+    RECBMSSensorEntityDescription(
+        key="battery_cell_res2",
+        name="Battery cell 2 resistance",
+        native_unit_of_measurement="Ω",
+        device_class="resistance",
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["nap"]["1"]
+    ),
+
+    RECBMSSensorEntityDescription(
+        key="battery_cell_res3",
+        name="Battery cell 3 resistance",
+        native_unit_of_measurement="Ω",
+        device_class="resistance",
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["nap"]["2"]
+    ),
+
+    RECBMSSensorEntityDescription(
+        key="battery_cell_res4",
+        name="Battery cell 4 resistance",
+        native_unit_of_measurement="Ω",
+        device_class="resistance",
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["nap"]["3"]
+    ),
+
+    RECBMSSensorEntityDescription(
+        key="battery_cell_res5",
+        name="Battery cell 5 resistance",
+        native_unit_of_measurement="Ω",
+        device_class="resistance",
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["nap"]["4"]
+    ),
+
+    RECBMSSensorEntityDescription(
+        key="battery_cell_res6",
+        name="Battery cell 6 resistance",
+        native_unit_of_measurement="Ω",
+        device_class="resistance",
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["nap"]["5"]
+    ),
+
+    RECBMSSensorEntityDescription(
+        key="battery_cell_res7",
+        name="Battery cell 7 resistance",
+        native_unit_of_measurement="Ω",
+        device_class="resistance",
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["nap"]["6"]
+    ),
+
+    RECBMSSensorEntityDescription(
+        key="battery_cell_res8",
+        name="Battery cell 8 resistance",
+        native_unit_of_measurement="Ω",
+        device_class="resistance",
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["nap"]["7"]
+    ),
+
+
+
+
 )
 
 

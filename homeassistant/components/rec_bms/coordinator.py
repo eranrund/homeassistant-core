@@ -55,8 +55,7 @@ class RECBMS:
         while self._client:
             _LOGGER.debug(f"connecting to {url}...")
             try:
-                await
-                self._client.connect()
+                await self._client.connect()
             except:
                 _LOGGER.exception('connect')
                 continue
