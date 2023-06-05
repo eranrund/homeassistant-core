@@ -132,14 +132,13 @@ SENSORS: tuple[RECBMSSensorEntityDescription, ...] = (
     ),
 
 
-
     RECBMSSensorEntityDescription(
         key="battery_cell_res1",
         name="Battery cell 1 resistance",
         native_unit_of_measurement="Ω",
         device_class="resistance",
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["nap"]["0"]
+        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["res"]["0"]
     ),
 
     RECBMSSensorEntityDescription(
@@ -148,7 +147,7 @@ SENSORS: tuple[RECBMSSensorEntityDescription, ...] = (
         native_unit_of_measurement="Ω",
         device_class="resistance",
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["nap"]["1"]
+        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["res"]["1"]
     ),
 
     RECBMSSensorEntityDescription(
@@ -157,7 +156,7 @@ SENSORS: tuple[RECBMSSensorEntityDescription, ...] = (
         native_unit_of_measurement="Ω",
         device_class="resistance",
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["nap"]["2"]
+        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["res"]["2"]
     ),
 
     RECBMSSensorEntityDescription(
@@ -166,7 +165,7 @@ SENSORS: tuple[RECBMSSensorEntityDescription, ...] = (
         native_unit_of_measurement="Ω",
         device_class="resistance",
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["nap"]["3"]
+        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["res"]["3"]
     ),
 
     RECBMSSensorEntityDescription(
@@ -175,7 +174,7 @@ SENSORS: tuple[RECBMSSensorEntityDescription, ...] = (
         native_unit_of_measurement="Ω",
         device_class="resistance",
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["nap"]["4"]
+        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["res"]["4"]
     ),
 
     RECBMSSensorEntityDescription(
@@ -184,7 +183,7 @@ SENSORS: tuple[RECBMSSensorEntityDescription, ...] = (
         native_unit_of_measurement="Ω",
         device_class="resistance",
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["nap"]["5"]
+        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["res"]["5"]
     ),
 
     RECBMSSensorEntityDescription(
@@ -193,7 +192,7 @@ SENSORS: tuple[RECBMSSensorEntityDescription, ...] = (
         native_unit_of_measurement="Ω",
         device_class="resistance",
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["nap"]["6"]
+        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["res"]["6"]
     ),
 
     RECBMSSensorEntityDescription(
@@ -202,7 +201,7 @@ SENSORS: tuple[RECBMSSensorEntityDescription, ...] = (
         native_unit_of_measurement="Ω",
         device_class="resistance",
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["nap"]["7"]
+        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["res"]["7"]
     ),
 
 
