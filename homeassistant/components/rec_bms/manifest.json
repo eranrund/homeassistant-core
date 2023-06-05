@@ -7,7 +7,7 @@
   "documentation": "https://www.home-assistant.io/integrations/rec_bms",
   "homekit": {},
   "iot_class": "local_polling",
-  "requirements": [],
+  "requirements": ["aiohttp-sse-client==0.2.1"],
   "ssdp": [],
   "zeroconf": []
 }

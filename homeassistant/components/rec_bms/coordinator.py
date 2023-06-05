@@ -1,17 +1,19 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import logging
 import socket
 
 import aiohttp
-
+import json
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, EVENT_HOMEASSISTANT_STOP
 from homeassistant.core import CALLBACK_TYPE, Event, HomeAssistant, callback
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from aiohttp_sse_client import client as sse_client
+
 
 from .const import DOMAIN
 
@@ -29,7 +31,6 @@ class RECBMSConnectionError(RECBMSError):
 class RECBMSConnectionClosedError(RECBMSConnectionError):
     pass
 
-
 @dataclass
 class RECBMS:
     """Main class for handling connections with RECBMS."""
@@ -38,29 +39,24 @@ class RECBMS:
     request_timeout: float = 8.0
     session: aiohttp.client.ClientSession | None = None
 
-    _client: aiohttp.ClientWebSocketResponse | None = None
+    _client: sse_client.EventSource | None = None
     _close_session: bool = False
+    _data: dict =  field(default_factory=dict)
+
     # _device: Device | None = None
     # _supports_si_request: bool | None = None
     # _supports_presets: bool | None = None
 
-    @property
-    def connected(self) -> bool:
-        return self._client is not None and not self._client.closed
-
     async def connect(self) -> None:
-        if self.connected:
+        if self._client:
             return
 
         url = f"http://{self.host}/ws"
 
         try:
-            self._client = await self.session.ws_connect(url=url, heartbeat=30)
-        except (
-            aiohttp.WSServerHandshakeError,
-            aiohttp.ClientConnectionError,
-            socket.gaierror,
-        ) as exception:
+            self._client = sse_client.EventSource(url, session=self.session)
+            await self._client.connect(10000)
+        except Exception as exception:
             _LOGGER.exception(exception)
             msg = (
                 "Error occurred while communicating with RECBMS device"
@@ -69,37 +65,22 @@ class RECBMS:
             raise RECBMSConnectionError(msg) from exception
 
     async def listen(self, callback: Callable[[dict], None]) -> None:
-        if not self._client or not self.connected:
+        if not self._client:
             msg = "Not connected to a RECBMS WebSocket"
             raise RECBMSError(msg)
 
-        while not self._client.closed:
-            message = await self._client.receive()
-
-            if message.type == aiohttp.WSMsgType.ERROR:
-                raise RECBMSConnectionError(self._client.exception())
-
-            if message.type == aiohttp.WSMsgType.TEXT:
-                message_data = message.json()
-                _LOGGER.debug(f"websocket updatE: {message_data}")
-                callback(message_data)
-
-            if message.type in (
-                aiohttp.WSMsgType.CLOSE,
-                aiohttp.WSMsgType.CLOSED,
-                aiohttp.WSMsgType.CLOSING,
-            ):
-                msg = (
-                    f"Connection to the RECBMS WebSocket on {self.host} has been closed"
-                )
-                raise RECBMSConnectionClosedError(msg)
+        async for event in self._client:
+            _LOGGER.debug(f"websocket update: {event}")
+            self._data[event.message] = json.loads(event.data)
+            callback(self._data)
 
     async def disconnect(self) -> None:
         """Disconnect from the WebSocket of a RECBMS device."""
-        if not self._client or not self.connected:
+        if not self._client:
             return
 
         await self._client.close()
+        self._client = None
 
 
 class RECBMSDataUpdateCoordinator(DataUpdateCoordinator[RECBMS]):
