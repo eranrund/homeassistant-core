@@ -31,6 +31,7 @@ class RECBMSConnectionError(RECBMSError):
 class RECBMSConnectionClosedError(RECBMSConnectionError):
     pass
 
+
 @dataclass
 class RECBMS:
     """Main class for handling connections with RECBMS."""
@@ -41,38 +42,34 @@ class RECBMS:
 
     _client: sse_client.EventSource | None = None
     _close_session: bool = False
-    _data: dict =  field(default_factory=dict)
+    _data: dict = field(default_factory=dict)
 
     # _device: Device | None = None
     # _supports_si_request: bool | None = None
     # _supports_presets: bool | None = None
 
-    async def connect(self) -> None:
-        if self._client:
-            return
-
-        url = f"http://{self.host}/ws"
-
-        try:
-            self._client = sse_client.EventSource(url, session=self.session)
-            await self._client.connect(10000)
-        except Exception as exception:
-            _LOGGER.exception(exception)
-            msg = (
-                "Error occurred while communicating with RECBMS device"
-                f" on WebSocket at {self.host}"
-            )
-            raise RECBMSConnectionError(msg) from exception
-
     async def listen(self, callback: Callable[[dict], None]) -> None:
-        if not self._client:
-            msg = "Not connected to a RECBMS WebSocket"
-            raise RECBMSError(msg)
+        url = f"http://{self.host}/ws"
+        self._client = sse_client.EventSource(url, session=aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(connect=10, sock_read=10)))
 
-        async for event in self._client:
-            _LOGGER.debug(f"websocket update: {event}")
-            self._data[event.message] = json.loads(event.data)
-            callback(self._data)
+        while self._client:
+            _LOGGER.debug(f"connecting to {url}...")
+            try:
+                await
+                self._client.connect()
+            except:
+                _LOGGER.exception('connect')
+                continue
+
+            _LOGGER.debug(f"connected to {url}")
+
+            try:
+                async for event in self._client:
+                    _LOGGER.debug(f"websocket update: {event}")
+                    self._data[event.message] = json.loads(event.data)
+                    callback(self._data)
+            except:
+                _LOGGER.exception("listen loop exception")
 
     async def disconnect(self) -> None:
         """Disconnect from the WebSocket of a RECBMS device."""
@@ -106,15 +103,6 @@ class RECBMSDataUpdateCoordinator(DataUpdateCoordinator[RECBMS]):
     def _use_websocket(self):
         async def listen():
             """Listen for state changes via WebSocket."""
-            try:
-                await self.recbms.connect()
-            except Exception as err:
-                self.logger.info(err)
-                if self.unsub:
-                    self.unsub()
-                    self.unsub = None
-                return
-
             try:
                 await self.recbms.listen(callback=self.async_set_updated_data)
             except RECBMSConnectionClosedError as err:
